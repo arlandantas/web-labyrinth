@@ -8,7 +8,6 @@
 </head>
 <body>
   <div id="bt_motion">Motion</div>
-  <div id="data">no-data</div>
   <div id="game"></div>
   <script>
     if (window.DeviceMotionEvent==undefined) {
@@ -22,35 +21,6 @@
         document.getElementById("bt_motion").innerText= JSON.stringify(gyro_sensor)
       });
     }
-    document.getElementById("data").innerText = 'JS works'
-    // function handleMotionEvent(event) {
-    //   document.getElementById("data").innerText = JSON.stringify(gyro_sensor)
-    //   var x = event.accelerationIncludingGravity.x;
-    //   var y = event.accelerationIncludingGravity.y;
-    //   var z = event.accelerationIncludingGravity.z;
-    //   gyro_sensor = {x, y, z}
-    // }
-    // window.addEventListener("devicemotion", handleMotionEvent)
-
-
-    // window.addEventListener("devicemotion", handleMotionEvent, true);
-
-    // navigator.permissions.query({name:'gyroscope'}).then(function(result) {
-    //   if (result.state === 'granted') {
-    //     alert("Giroscópio liberado!")
-    //     gyro_sensor = new Gyroscope({ frequency: 25 });
-    //     gyro_sensor.start();
-
-    //     gyro_sensor.onreading = () => {
-    //         console.log("Angular velocity around the X-axis " + gyro_sensor.x);
-    //         console.log("Angular velocity around the Y-axis " + gyro_sensor.y);
-    //         console.log("Angular velocity around the Z-axis " + gyro_sensor.z);
-    //     };
-    //   } else if (result.state === 'prompt') {
-    //     // showButtonToEnableLocalNews();
-    //   }
-    //   // Don't do anything if the permission was denied.
-    // });
 
     let gyro_sensor = { x: null, y: null, z: null };
 
@@ -61,8 +31,8 @@
       physics: {
         default: 'arcade',
         arcade: {
-          // gravity: { y: 300 },
-          // gravity: { y: 0, x: 0 },
+          gravity: { y: 300 },
+          // gravity: { y: 300, x: 0 },
           debug: false
         }
       },
@@ -81,10 +51,6 @@
       this.load.image('rect_h', 'assets/platform.png'); // 400x32
       this.load.image('square', 'assets/square.png');
       this.load.image('sky', 'assets/sky.png');
-      this.load.spritesheet('dude', 
-          'assets/dude.png',
-          { frameWidth: 32, frameHeight: 48 }
-      );
     }
 
     function create ()
@@ -92,20 +58,21 @@
       this.add.image(400, 300, 'sky');
 
       walls = this.physics.add.staticGroup();
-      walls.create(400, 600, 'rect_h').setScale(2).refreshBody();
-      walls.create(400, -5, 'rect_h').setScale(2).refreshBody();
-      walls.create(600, 400, 'rect_h');
-      walls.create(50, 250, 'rect_h');
-      walls.create(750, 220, 'rect_h');
+      walls.create(400, 600, 'rect_h').setScale(2).refreshBody()
+      walls.create(400, -5, 'rect_h').setScale(2).refreshBody()
+      walls.create(600, 400, 'rect_h')
+      walls.create(50, 250, 'rect_h')
+      walls.create(750, 220, 'rect_h')
 
-      walls.create(-30, 240, 'rect_v').setScale(2).refreshBody();
-      walls.create(830, 240, 'rect_v').setScale(2).refreshBody();
+      walls.create(-30, 240, 'rect_v').setScale(2).refreshBody()
+      walls.create(830, 240, 'rect_v').setScale(2).refreshBody()
+      walls.create(100, -150, 'rect_v')
 
-      player = this.physics.add.sprite(100, 450, 'dude');
+      player = this.physics.add.image(100, 450, 'square');
+      // player = this.physics.add.sprite(100, 450, 'dude');
 
-      player.setBounce(0.2);
+      player.setBounce(0.5);
       player.setCollideWorldBounds(true);
-      // player.body.setGravityY(300)
 
       this.physics.add.collider(player, walls);
 
@@ -136,27 +103,13 @@
 
     function update ()
     {
-      if (cursors.left.isDown) {
-        // player.setVelocityX(-160);
-        velocity.x -= 10
-        player.body.setGravityX(velocity.x)
-        // player.setVelocityX(velocity.x);
-        player.anims.play('left', true);
-      } else if (cursors.right.isDown) {
-        velocity.x += 10
-        player.body.setGravityX(velocity.x)
-        // player.setVelocityX(velocity.x);
-        player.anims.play('right', true);
-      }
-      if (cursors.up.isDown) {
-        velocity.y -= 10
-        player.setVelocityY(velocity.y);
-      } else if (cursors.down.isDown) {
-        velocity.y += 10
-        player.setVelocityY(velocity.y);
-      }
+      velocity.x = gyro_sensor.x * -100
+      player.body.setGravityX(velocity.x)
 
-      this.gravityText.text = JSON.stringify(velocity)+"\n"+JSON.stringify(gyro_sensor)
+      velocity.y = gyro_sensor.y * 100
+      player.setVelocityY(velocity.y)
+
+      // this.gravityText.text = JSON.stringify(velocity, null, "\t")+"\n"+JSON.stringify(gyro_sensor, null, "\t")
     }
   </script>
 </body>
