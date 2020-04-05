@@ -2,115 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0 ">
   <title>Test1</title>
-  <script src="phaser.min.js"></script>
+  <style>
+    body, html, #game {
+      margin: 0;
+      padding: 0;
+    }
+
+    #game {
+      width: 100vw;
+    }
+  </style>
 </head>
 <body>
-  <div id="bt_motion">Motion</div>
+  <div id="bt_motion">Usando Setas</div>
   <div id="game"></div>
-  <script>
-    if (window.DeviceMotionEvent==undefined) {
-      document.getElementById("bt_motion").innerText="Não tem motion!!!";
-    } else {
-      window.addEventListener("devicemotion", function(event) {
-        var x = event.accelerationIncludingGravity.x
-        var y = event.accelerationIncludingGravity.y
-        var z = event.accelerationIncludingGravity.z
-        gyro_sensor = { x, y, z }
-        document.getElementById("bt_motion").innerText= JSON.stringify(gyro_sensor)
-      });
-    }
-
-    let gyro_sensor = { x: null, y: null, z: null };
-
-    var config = {
-      type: Phaser.AUTO,
-      width: 800,
-      height: 600,
-      physics: {
-        default: 'arcade',
-        arcade: {
-          gravity: { y: 300 },
-          // gravity: { y: 300, x: 0 },
-          debug: false
-        }
-      },
-      scene: {
-        preload: preload,
-        create: create,
-        update: update
-      }
-    };
-
-    var game = new Phaser.Game(config);
-    let velocity = { y: 0, x: 0 }
-
-    function preload () {
-      this.load.image('rect_v', 'assets/rect.png'); // 60x480
-      this.load.image('rect_h', 'assets/platform.png'); // 400x32
-      this.load.image('square', 'assets/square.png');
-      this.load.image('sky', 'assets/sky.png');
-    }
-
-    function create ()
-    {
-      this.add.image(400, 300, 'sky');
-
-      walls = this.physics.add.staticGroup();
-      walls.create(400, 600, 'rect_h').setScale(2).refreshBody()
-      walls.create(400, -5, 'rect_h').setScale(2).refreshBody()
-      walls.create(600, 400, 'rect_h')
-      walls.create(50, 250, 'rect_h')
-      walls.create(750, 220, 'rect_h')
-
-      walls.create(-30, 240, 'rect_v').setScale(2).refreshBody()
-      walls.create(830, 240, 'rect_v').setScale(2).refreshBody()
-      walls.create(100, -150, 'rect_v')
-
-      player = this.physics.add.image(100, 450, 'square');
-      // player = this.physics.add.sprite(100, 450, 'dude');
-
-      player.setBounce(0.5);
-      player.setCollideWorldBounds(true);
-
-      this.physics.add.collider(player, walls);
-
-      this.anims.create({
-          key: 'left',
-          frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
-          frameRate: 10,
-          repeat: -1
-      });
-
-      this.anims.create({
-          key: 'turn',
-          frames: [ { key: 'dude', frame: 4 } ],
-          frameRate: 20
-      });
-
-      this.anims.create({
-          key: 'right',
-          frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-          frameRate: 10,
-          repeat: -1
-      });
-
-      cursors = this.input.keyboard.createCursorKeys();
-
-      this.gravityText = this.add.text(10, 10, '');
-    }
-
-    function update ()
-    {
-      velocity.x = gyro_sensor.x * -100
-      player.body.setGravityX(velocity.x)
-
-      velocity.y = gyro_sensor.y * 100
-      player.setVelocityY(velocity.y)
-
-      // this.gravityText.text = JSON.stringify(velocity, null, "\t")+"\n"+JSON.stringify(gyro_sensor, null, "\t")
-    }
-  </script>
+  <script src="./js/index.js"></script>
 </body>
 </html>
